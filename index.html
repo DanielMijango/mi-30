@@ -79,12 +79,18 @@
 
         .book {
             width: 400px;
-            max-width: 90vw; /* Adaptable a móviles */
+            max-width: 90vw; /* Asegura que no se desborde cerrado en celulares */
             height: 550px;
             position: relative;
             transform-style: preserve-3d;
             box-shadow: 20px 20px 40px rgba(0,0,0,0.3);
             border-radius: 10px 20px 20px 10px;
+            transition: transform 1.5s cubic-bezier(0.645, 0.045, 0.355, 1); /* Suaviza el centrado */
+        }
+
+        /* NUEVO: Clase para centrar el libro abierto */
+        .book.open {
+            transform: translateX(50%); /* Centra el lomo en pantallas grandes */
         }
 
         .page {
@@ -212,42 +218,44 @@
             box-shadow: 15px 15px 30px rgba(0,0,0,0.3), inset 5px 5px 15px rgba(255,255,255,0.5), inset -5px -5px 15px rgba(0,0,0,0.1);
             position: relative; display: flex; justify-content: center; align-items: center; transform: rotateX(25deg) rotateZ(0deg);
             transform-style: preserve-3d; border: 4px solid #fff; margin-bottom: -30px; z-index: 2; transition: transform 0.5s ease;
+        .spotify-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 20px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 40px rgba(209, 0, 71, 0.2);
+            z-index: 1;
         }
-        .record-player:hover { transform: rotateX(15deg) scale(1.02); }
-
-        .vinyl { width: 260px; height: 260px; background: #111; border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; background-image: repeating-radial-gradient(#111, #111 4px, #2a2a2a 5px, #111 6px); animation: spin 3s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .vinyl-label { width: 80px; height: 80px; background: var(--light-pink); border-radius: 50%; border: 2px solid #fff; display: flex; justify-content: center; align-items: center; font-size: 2rem; box-shadow: inset 0 0 10px rgba(209,0,71,0.5); position: relative; }
-        .vinyl-label::after { content: ''; width: 15px; height: 15px; background: #222; border-radius: 50%; position: absolute; border: 2px solid #555; }
-
-        .tonearm { position: absolute; top: 25px; right: 25px; width: 15px; height: 160px; background: linear-gradient(to right, #e0e0e0, #ffffff, #999999); border-radius: 10px; transform-origin: top center; transform: rotate(25deg); box-shadow: 5px 10px 15px rgba(0,0,0,0.5); z-index: 3; }
-        .tonearm::before { content: ''; position: absolute; top: -15px; left: -15px; width: 45px; height: 45px; background: #ccc; border-radius: 50%; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-        .tonearm::after { content: ''; position: absolute; bottom: -15px; left: -10px; width: 35px; height: 50px; background: #333; border-radius: 5px; box-shadow: 2px 5px 10px rgba(0,0,0,0.5); }
-
-        .spotify-container { width: 100%; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 20px; border-radius: 20px; border: 2px solid rgba(255, 255, 255, 0.8); box-shadow: 0 20px 40px rgba(209, 0, 71, 0.2); z-index: 1; box-sizing: border-box; }
 
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #ffe6eb; }
         ::-webkit-scrollbar-thumb { background: var(--light-pink); border-radius: 5px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary-pink); }
 
+        /* --- NUEVO: Media Queries para hacerlo perfecto en móvil --- */
         @media (max-width: 768px) {
             .book {
-                height: 130vw; /* Altura calculada proporcional al ancho de pantalla */
+                height: 130vw;
                 max-height: 520px;
             }
-            .front h1 { font-size: 2rem; }
+            
+            /* TRUCO DE MAGIA: Al abrir el libro en celular, lo centramos y reducimos su escala
+               para que ambas páginas (izquierda y derecha) quepan perfectamente en la pantalla */
+            .book.open {
+                transform: translateX(27.5%) scale(0.55);
+            }
+
+            .front h1 { font-size: 2.2rem; }
             .front h2, .back h3, .front h3 { font-size: 1.4rem; }
-            .date-text { font-size: 1.8rem; }
             
             .album-img { width: 90%; height: 45%; border-width: 6px; border-bottom-width: 25px; }
-            button, .nav-btn { font-size: 0.95rem; padding: 8px 15px; }
+            button, .nav-btn { font-size: 1rem; padding: 8px 15px; }
             
             .letter-header, .cinema-title { font-size: 2.2rem; }
-            
-            /* Sincronizando line-height con el fondo a rayas para que coincida en móvil */
-            .letter-content { font-size: 1.3rem; line-height: 28px; }
+            .letter-content { font-size: 1.4rem; line-height: 28px; }
             .letter-paper { 
                 background-image: repeating-linear-gradient(transparent, transparent 27px, #ffb6c1 27px, #ffb6c1 28px);
                 padding: 30px 20px;
@@ -257,7 +265,6 @@
             .film-strip { padding: 15px 0; }
             .film-frame { margin: 0 10px; padding: 5px; min-height: 150px; }
 
-            /* Escalamos todo el contenedor del tocadiscos en bloque para que no se desarme */
             .turntable-container {
                 transform: scale(0.85);
                 transform-origin: top center;
@@ -383,6 +390,9 @@ Gracias por hacer de mi mundo un lugar tan feliz."></textarea>
             const page = document.getElementById(`page${pageNum}`);
             page.style.transform = 'rotateY(-180deg)';
             
+            // Avisamos al libro que se abrió para que se centre
+            document.getElementById('book').classList.add('open');
+            
             setTimeout(() => {
                 page.style.zIndex = pageNum; 
             }, 300); 
@@ -397,6 +407,11 @@ Gracias por hacer de mi mundo un lugar tan feliz."></textarea>
         function prevPage(pageNum) {
             const page = document.getElementById(`page${pageNum}`);
             page.style.transform = 'rotateY(0deg)';
+            
+            // Si estamos cerrando la portada, el libro vuelve a su posición original
+            if (pageNum === 1) {
+                document.getElementById('book').classList.remove('open');
+            }
             
             setTimeout(() => {
                 page.style.zIndex = 10 - pageNum + 1;
