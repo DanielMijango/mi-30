@@ -419,11 +419,25 @@ Gracias por hacer de mi mundo un lugar tan feliz."></textarea>
         }
 
         const textarea = document.querySelector('.letter-content');
+        
+        // Función que calcula la altura real del texto
+        function adjustTextareaHeight() {
+            if (textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = (textarea.scrollHeight) + 'px';
+            }
+        }
+        
         if (textarea) {
-            textarea.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = (this.scrollHeight) + 'px';
-            });
+            // Ajustar al escribir
+            textarea.addEventListener('input', adjustTextareaHeight);
+            // Ajustar inmediatamente al cargar la página en el celular
+            window.addEventListener('load', adjustTextareaHeight);
+            // Ajustar si el usuario voltea la pantalla del celular
+            window.addEventListener('resize', adjustTextareaHeight);
+            
+            // Forzar un primer ajuste de seguridad
+            setTimeout(adjustTextareaHeight, 100);
         }
     </script>
 </body>
